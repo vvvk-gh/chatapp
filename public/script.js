@@ -1,21 +1,23 @@
 let socket = io()
 
+let sendMsgBtn = document.getElementById('sendMsgBtn')
+let msgBox = document.getElementById('msgBox')
+let ulMsgList = document.getElementById('ulMsgList')
 
-document.getElementById('clickable')
-.onclick = function() {
-    socket.emit('printboom');    
-}
-//client to server : client - calling
-//we can use emit to call an event 
+//client to server : client sending through emit
+sendMsgBtn.onclick = function() {
+        socket.emit('msg_sent' , {
+                msg:msgBox.value
+        })
+        //and making it empty
+        msgBox.value = ' '
+} 
 
-
-
-
-// server to client : client - executing
-//we can use on to execute emitted event
-socket.on('whizz' , ()=>{
-    let div = document.createElement('div')
-    div.innerText = 'Whizz'
-    document.body.appendChild(div);
+// server to client : client executing 
+socket.on('msg_revd' , (data)=>{
+    let newMsgItem = document.createElement('li')
+    newMsgItem.innerText = data.msg
+    ulMsgList.append(newMsgItem); 
 })
+
 
