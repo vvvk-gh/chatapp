@@ -1,23 +1,19 @@
 let socket = io()
 
-let sendMsgBtn = document.getElementById('sendMsgBtn')
-let msgBox = document.getElementById('msgBox')
-let ulMsgList = document.getElementById('ulMsgList')
+$('#loginBox').show()
+$('#chatBox').hide()
 
-//client to server : client sending through emit
-sendMsgBtn.onclick = function() {
-        socket.emit('msg_sent' , {
-                msg:msgBox.value
-        })
-        //and making it empty
-        msgBox.value = ' '
-} 
+$('#loginBtn').click(() => {
+     
+    //emit(x , {optional obj}) x -> is the name of the event
+    socket.emit('login' , {
+        username : $('#loginInput').val()
+    })    
 
-// server to client : client executing 
-socket.on('msg_revd' , (data)=>{
-    let newMsgItem = document.createElement('li')
-    newMsgItem.innerText = data.msg
-    ulMsgList.append(newMsgItem); 
+    socket.on('logged_in' , (data)=>{      
+        $('#loginBox').hide()
+        $('#chatBox').show()
+        $('#displayUser').text(`Hi ${data.username} ,`); 
+    })
+        
 })
-
-
