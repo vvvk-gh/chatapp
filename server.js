@@ -12,11 +12,21 @@ io.on('connection', (socket)=>{
     console.log(`Connected to the socket : ${socket.id}`)
         
     socket.on('login', (data)=>{
+        socket.join(data.username) // joined room
         socket.emit('logged_in' , data)
     })
 
-})
+    socket.on('msg_send', (data)=>{
+        if(data.to){
+            console.log(data.to);
+            io.to(data.to).emit('msg_rcvd' ,data)
+        }else{
+            socket.broadcast.emit('msg_rcvd' ,data)
+        }
 
+    })
+
+})
 
 app.use('/' , express.static(__dirname + '/public'))
 
