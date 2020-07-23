@@ -21,7 +21,7 @@ socket.on('logged_in' , (data)=>{
     })
 
 
- socket.on('loggin_failed' , ()=>{
+ socket.on('login_failed' , ()=>{
         alert('Invalid Username or Password');
     })
         

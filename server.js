@@ -28,7 +28,7 @@ io.on('connection', (socket)=>{
             }
         }
         else{
-            socket.emit('loggin_failed')
+            socket.emit('login_failed')
         }
         
         
