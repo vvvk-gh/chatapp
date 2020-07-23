@@ -9,8 +9,19 @@ const server = http.createServer(app)
 const io = socketio(server);
 
 let Users ={};
+let socketMap = {};
 io.on('connection', (socket)=>{
     console.log(`Connected to the socket : ${socket.id}`)
+
+
+    function login(s ,u,d){
+        s.join(u)
+        s.emit('logged_in' , d)
+        //creating an object containing socket.id:user for each login  
+        socketMap[s.id] = u
+        console.log(socketMap)
+    }
+
     socket.on('login', (data)=>{
         
         if(((data.username).length == 0|| (data.password).length == 0 )){
@@ -19,8 +30,9 @@ io.on('connection', (socket)=>{
         
         else if(Users[data.username]){
             if((data.password).indexOf(Users[data.username]) !== -1){
-                socket.join(data.username);
-                socket.emit('logged_in' , data)
+                //socket.join(data.username);
+                //socket.emit('logged_in' , data)
+                login(socket , data.username ,data)
             }
             else{
                 socket.emit('login_failed')
@@ -29,14 +41,15 @@ io.on('connection', (socket)=>{
         }
         else{
             Users[data.username] = data.password
-            socket.join(data.username) 
-            socket.emit('logged_in' , data)
+            //socket.join(data.username) 
+            //socket.emit('logged_in' , data)
+            login(socket , data.username , data)
         }
-        
-        console.log(Users);
+    
     })
 
     socket.on('msg_send', (data)=>{
+        data.from = socketMap[socket.id]
         if(data.to){
             io.to(data.to).emit('msg_rcvd' ,data)
         }else{
