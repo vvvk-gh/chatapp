@@ -8,30 +8,32 @@ const socketio = require('socket.io')
 const server = http.createServer(app)
 const io = socketio(server);
 
-let Users = {}
+let Users ={};
 io.on('connection', (socket)=>{
     console.log(`Connected to the socket : ${socket.id}`)
-        
     socket.on('login', (data)=>{
-        if(Users[data.Username]){
-            //console.log(Users);
+        
+        if(((data.username).length == 0|| (data.password).length == 0 )){
+            socket.emit('unfilled')
+        }
+        
+        else if(Users[data.username]){
             if((data.password).indexOf(Users[data.username]) !== -1){
                 socket.join(data.username);
                 socket.emit('logged_in' , data)
             }
             else{
-                Users[data.username] = data.password
-                console.log(Users);
-                socket.join(data.username) 
-                socket.emit('logged_in' , data)
-        
-            }
+                socket.emit('login_failed')
+            }  
+            
         }
         else{
-            socket.emit('login_failed')
+            Users[data.username] = data.password
+            socket.join(data.username) 
+            socket.emit('logged_in' , data)
         }
         
-        
+        console.log(Users);
     })
 
     socket.on('msg_send', (data)=>{

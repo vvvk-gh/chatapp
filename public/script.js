@@ -25,7 +25,9 @@ socket.on('logged_in' , (data)=>{
         alert('Invalid Username or Password');
     })
         
-
+socket.on('unfilled' , ()=>{
+    alert('Please eneter a valid Username and password')
+})
 
 
 //send msg button clicked
