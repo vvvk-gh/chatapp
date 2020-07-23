@@ -8,23 +8,30 @@ $('#loginBtn').click(() => {
     
     //emit(x , {optional obj}) x -> is the name of the event
     socket.emit('login' , {
-        username : $('#loginInput').val()
+        username : $('#loginInput').val(),
+        password : $('#loginPass').val()
     })    
     
-    socket.on('logged_in' , (data)=>{      
+})   
+
+socket.on('logged_in' , (data)=>{      
         $('#loginBox').hide()
         $('#chatBox').show()
         $('#displayUser').text(`Hi ${data.username} ,`); 
     })
-    
+
+
+ socket.on('loggin_failed' , ()=>{
+        alert('Invalid Username or Password');
+    })
         
-})
+
 
 
 //send msg button clicked
     
 $('#sendMsgBtn').click(()=>{
-    console.log(`send btn clicked`)
+    
     socket.emit('msg_send' , {
         msg: $('#msgBox').val(),        
         username : $('#loginInput').val(),
@@ -36,3 +43,4 @@ $('#sendMsgBtn').click(()=>{
 socket.on('msg_rcvd' , (data)=>{
     $('#ulList').append($('<li>').text(data.msg))
 })
+
